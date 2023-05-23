@@ -7,9 +7,9 @@
 		<title>viewer</title>
 	</head>
 	<body>
-		<video width="320" heioht="240" controls>
+		<video width="320" height="240" controls>
 			<source
-				src="{{url_for('static',filename='videos/' + filename)}}"
+				src="{{url_for('static',filename='videos/input/' + filename)}}"
 				type="video/mp4"
 			/>
 		</video>
