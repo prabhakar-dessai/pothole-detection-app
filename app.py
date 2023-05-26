@@ -22,10 +22,10 @@ def upload_file():
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename) 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename))
-            # processed_filename = process_file(filename) # code in main.py
-            return render_template('success.html', filename=filename) # change after including processing step
+            processed_filename = process_file(filename) # code in main.py
+            return render_template('success.html', filename=processed_filename) # change after including processing step
     return render_template('index.html')
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()
