@@ -6,12 +6,29 @@ from mmengine.utils import track_iter_progress
 from mmdet.apis import inference_detector, init_detector
 from mmdet.registry import VISUALIZERS
 
+config_file = 'config.py'
+checkpoint_file = 'models/epoch_30.pth'
+model = init_detector(config_file, checkpoint_file, device='cpu')
 
+def process_file_img(filename):
+    img = mmcv.imread(rf"static/videos/input/{filename}",channel_order='rgb')
+    result = inference_detector(model, img)
+    out_file=rf"videos/output/output_{filename}"
+
+    visualizer = VISUALIZERS.build(model.cfg.visualizer)
+    visualizer.dataset_meta = model.dataset_meta
+    # show the results
+    visualizer.add_datasample(
+        'result',
+        img,
+        data_sample=result,
+        draw_gt = None,
+        wait_time=0,
+        out_file=rf"static/videos/output/output_{filename}"
+    )
+    return out_file
 
 def process_file(filename):
-    config_file = 'config.py'
-    checkpoint_file = 'models/epoch_30.pth'
-    model = init_detector(config_file, checkpoint_file, device='cpu')
     video=rf"static/videos/input/{filename}"
     processed_filename=rf"static/videos/output/output_{filename}"
     out_file=rf"videos/output/output_{filename}"

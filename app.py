@@ -1,11 +1,11 @@
 from flask import Flask,request,render_template
 from werkzeug.utils import secure_filename
 import os
-from main import process_file
+from main import *
 
 app = Flask(__name__)
 
-app.config['ALLOWED_EXTENSIONS'] = {'mp4'}
+app.config['ALLOWED_EXTENSIONS'] = {'mp4','png','jpg'}
 app.config['UPLOAD_FOLDER'] = 'static/videos/input'
 
 def allowed_file(filename):
@@ -15,7 +15,7 @@ def allowed_file(filename):
 def home():
     return render_template('index.html')
 
-@app.route('/',methods=['GET','POST'])
+@app.route('/video_view',methods=['GET','POST'])
 def upload_file():
     if request.method == 'POST':
         file = request.files['video']
@@ -23,9 +23,19 @@ def upload_file():
             filename = secure_filename(file.filename) 
             file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename))
             processed_filename = process_file(filename) # code in main.py
-            return render_template('success.html', filename=processed_filename) # change after including processing step
+            return render_template('success.html', filename=processed_filename , type='video') # change after including processing step
     return render_template('index.html')
 
+@app.route('/image_view',methods=['GET','POST'])
+def upload_file_img():
+    if request.method == 'POST':
+        file = request.files['img']
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename) 
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'],file.filename))
+            processed_filename = process_file_img(filename) # code in main.py
+            return render_template('success.html', filename=processed_filename , type='image') # change after including processing step
+    return render_template('index.html')
 
 if __name__ == "__main__":
     app.run()

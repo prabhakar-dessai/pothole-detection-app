@@ -6,14 +6,37 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Obstruction and lane detection</title>
 	</head>
+	<link
+		rel="stylesheet"
+		href="{{url_for('static',filename='css/style.css')}}"
+	/>
+	<script src="{{url_for('static',filename='js/scripts.js')}}"></script>
 	<body>
+		<label for="media">Choose</label>
+		<select name="media" id="media" onchange="enableMedia(this)">
+			<option value="none">select option</option>
+			<option value="image">image</option>
+			<option value="video">video</option>
+		</select>
 		<form
 			action="{{url_for('upload_file')}}"
 			method="post"
 			enctype="multipart/form-data"
+			id="video_form"
+			class="d-none"
 		>
 			<input type="file" name="video" accept="video/*" />
-			<input type="submit" value="Upload" />
+			<input type="submit" value="Upload video" />
+		</form>
+		<form
+			action="{{url_for('upload_file_img')}}"
+			method="post"
+			enctype="multipart/form-data"
+			id="image_form"
+			class="d-none"
+		>
+			<input type="file" id="img" name="img" accept="image/*" />
+			<input type="submit" value="Upload image" />
 		</form>
 	</body>
 </html>
