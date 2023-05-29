@@ -4,17 +4,19 @@ from mmcv.transforms import Compose
 from mmengine.utils import track_iter_progress
 
 from mmdet.apis import inference_detector, init_detector
+from lane import *
 from mmdet.registry import VISUALIZERS
 
 config_file = 'config.py'
 checkpoint_file = 'models/epoch_30.pth'
-model = init_detector(config_file, checkpoint_file, device='cpu')
+model = init_detector(config_file, checkpoint_file, device='cuda:0')
 
 def process_file_img(filename):
     img = mmcv.imread(rf"static/videos/input/{filename}",channel_order='rgb')
     result = inference_detector(model, img)
     out_file=rf"videos/output/output_{filename}"
-
+    lines = lane(img)
+    img = plot_lines(img,lines)
     visualizer = VISUALIZERS.build(model.cfg.visualizer)
     visualizer.dataset_meta = model.dataset_meta
     # show the results
@@ -31,6 +33,7 @@ def process_file_img(filename):
 def process_file(filename):
     video=rf"static/videos/input/{filename}"
     processed_filename=rf"static/videos/output/output_{filename}"
+    # processed_filename=rf"output_{filename}"
     out_file=rf"videos/output/output_{filename}"
 
     # build test pipeline
@@ -52,6 +55,8 @@ def process_file(filename):
         (video_reader.width, video_reader.height))
 
     for frame in track_iter_progress(video_reader):
+        frame2 = frame.copy()
+        lines = lane(frame2)
         result = inference_detector(model, frame, test_pipeline=test_pipeline)
         visualizer.add_datasample(
             name='video',
@@ -59,14 +64,11 @@ def process_file(filename):
             data_sample=result,
             draw_gt=False,
             show=False,
-            # pred_score_thr=score_thr
+            pred_score_thr=40
             )
         frame = visualizer.get_image()
 
-        # if show:
-        #     cv2.namedWindow('video', 0)
-        #     mmcv.imshow(frame, 'video', wait_time)
-        # if out:
+        frame = plot_lines(frame,lines)
         video_writer.write(frame)
 
     if video_writer:

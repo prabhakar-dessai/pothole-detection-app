@@ -1,42 +1,237 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Obstruction and lane detection</title>
-	</head>
-	<link
-		rel="stylesheet"
-		href="{{url_for('static',filename='css/style.css')}}"
-	/>
-	<script src="{{url_for('static',filename='js/scripts.js')}}"></script>
-	<body>
-		<label for="media">Choose</label>
-		<select name="media" id="media" onchange="enableMedia(this)">
-			<option value="none">select option</option>
-			<option value="image">image</option>
-			<option value="video">video</option>
-		</select>
-		<form
-			action="{{url_for('upload_file')}}"
-			method="post"
-			enctype="multipart/form-data"
-			id="video_form"
-			class="d-none"
-		>
-			<input type="file" name="video" accept="video/*" />
-			<input type="submit" value="Upload video" />
-		</form>
-		<form
-			action="{{url_for('upload_file_img')}}"
-			method="post"
-			enctype="multipart/form-data"
-			id="image_form"
-			class="d-none"
-		>
-			<input type="file" id="img" name="img" accept="image/*" />
-			<input type="submit" value="Upload image" />
-		</form>
-	</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Obstruction and lane detection</title>
+    <!-- Latest compiled and minified CSS -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    />
+    <!-- Bootstrap Select CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/css/bootstrap-select.min.css"
+    />
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap Select JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/bootstrap-select.min.js"></script>
+
+    <!-- (Optional) Bootstrap Select JavaScript translation files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.14/js/i18n/defaults-*.min.js"></script>
+  </head>
+
+  <!--Styles CSS -->
+  <link
+    rel="stylesheet"
+    href="{{url_for('static',filename='css/style.css')}}"
+  />
+
+  <!--Index Js-->
+  <script src="{{url_for('static',filename='js/scripts.js')}}"></script>
+
+  <body>
+    
+    <!-- Landing Page section -->
+    <div class="header">
+      <div class="navbar">
+        <img src="/static/images/logo.svg" alt="Logo" class="logo" />
+      </div>
+      <div class="content">
+        <h1 style="font-size: 4vw">
+          <span>Avoid Obstacles, Stay in Line</span><br />
+          <span>Navigate safely with our </span><br />
+          <span>advanced instance </span><br />
+          <span>segmentation technology.</span>
+        </h1>
+        <div class="button-container">
+          <button type="button" onclick="scrollToDemo()">DEMO</button>
+          <button type="button" onclick="scrollToAbout()">ABOUT US</button>
+        </div>
+      </div>
+    </div>
+
+    <!--Demo Section-->
+    <div class="demo" id="demoDiv">
+      <h1>DEMO</h1>
+
+      <!--Selecting Image or Instance Segmentation-->
+      <div class="select-container">
+        <label for="media" style="text-align: center"
+          >What type of file do you want to work with?</label
+        >
+        <div class="select-box">
+          <select class="selectpicker" name="file_type">
+            <option></option>
+            <option value="Images">Images</option>
+            <option value="Videos">Videos</option>
+          </select>
+        </div>
+
+        <!--Image Instance Segmentation-->
+        <div class="section" id="image-section">
+          <h2 class="section-title">Instance Segmentation for Images</h2>
+          <p class="section-description">
+            This takes in an image and outputs the image, providing the exact
+            outline of objects within the image.
+          </p>
+          <form
+            action="{{url_for('upload_file_img')}}"
+            method="post"
+            enctype="multipart/form-data"
+            id="image_form"
+            class="d-none"
+          >
+            <label for="img" class="small-font" style="font-size: 20px"
+              >Choose an image:</label
+            >
+            <div id="image-container" class="image-container">
+              <div id="image-preview" class="image-preview">
+                <img id="image-preview-image" src="#" alt="Preview" />
+                <span id="image-close-file" class="close-file">&times;</span>
+              </div>
+              <label for="img" class="upload-label">
+                <div class="upload-container">
+                  <div id="image-upload-section" class="upload-section">
+                    <span id="image-upload-text" class="upload-text"
+                      >Drag and drop or click to upload an image</span
+                    >
+                  </div>
+                  <div class="choose">
+                    <label for="img" class="choose-label">Choose File</label>
+                    <input type="file" id="img" name="img" accept="image/*" />
+                  </div>
+                  <div class="file-info" id="image-file-info">
+                    <span id="image-file-name" class="file-name"></span>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div class="upload-button">
+              <input type="submit" value="Upload image" />
+            </div>
+            </div>
+          </form>
+         
+          <!-- Location to display the input and processed image or video -->
+          <div id="processed-image-container">
+            {% if input_filename %}
+            <div class="image-container">
+              <div class="image-wrapper">
+                {% if input_type == 'image' %}
+                <img id="input-image" class="input-image img-responsive" src="{{ url_for('static', filename='videos/input/' + input_filename) }}" />
+                <div class="caption">Input Image</div>
+                {% elif input_type == 'video' %}
+                <video id="input-video" class="input-video img-responsive" controls>
+                  <source src="{{ url_for('static', filename='videos/input/' + input_filename) }}" type="video/mp4" />
+                </video>
+                <div class="caption">Input Video</div>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+            
+            {% if processed_filename %}
+            <div class="image-container">
+              <div class="image-wrapper">
+                {% if processed_type == 'image' %}
+                <img id="processed-image" class="processed-image img-responsive" src="{{ url_for('static', filename=processed_filename) }}" />
+                <div class="caption">Processed Image</div>
+                {% elif processed_type == 'video' %}
+                <video id="processed-video" class="processed-video img-responsive" controls>
+                  <source src="{{ url_for('static', filename=processed_filename) }}" type="video/mp4" />
+                </video>
+                <div class="caption">Processed Video</div>
+                {% endif %}
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <!--Video Instance Segmentation-->
+        <div class="section" id="video-section">
+          <h2 class="section-title">Instance Segmentation for Videos</h2>
+          <p class="section-description">
+            This takes in a video and outputs the video, providing the exact
+            outline of objects within the video.
+          </p>
+          <form
+            action="{{url_for('upload_file')}}"
+            method="post"
+            enctype="multipart/form-data"
+            id="video_form"
+            class="d-none">
+            <label for="video" class="small-font" style="font-size: 20px"
+              >Choose a video:</label
+            >
+            <div id="video-container" class="video-container">
+              <div id="video-preview" class="video-preview">
+                <video id="video-preview-video" controls></video>
+                <span id="video-close-file" class="close-file">&times;</span>
+              </div>
+              <label for="video" class="upload-label">
+                <div class="upload-container">
+                  <div id="video-upload-section" class="upload-section">
+                    <span id="video-upload-text" class="upload-text"
+                      >Drag and drop or click to upload a video</span
+                    >
+                  </div>
+                  <div class="choose">
+                    <label for="video" class="choose-label">Choose File</label>
+                    <input
+                      type="file"
+                      id="video"
+                      name="video"
+                      accept="video/*"
+                    />
+                  </div>
+                  <div class="file-info" id="video-file-info">
+                    <span id="video-file-name" class="file-name"></span>
+                  </div>
+                </div>
+              </label>
+            </div>
+            <div class="upload-button">
+              <input type="submit" value="Upload Video" />
+            </div>
+          </form>
+        </div>          
+      </div>
+    </div>
+
+    <!--About Us Section-->
+    <div class="about-us" id="aboutUs">
+      <h1>Welcome to <span class="highlight">Pothole</span> Detector</h1>
+      <div class="about-us-text">
+        <p>
+          At Pothole Detector, we are proud to introduce our web app that
+          utilizes cutting-edge technology for obstruction and lane line
+          detection. With our advanced instance segmentation model, we go beyond
+          the conventional methods by detecting various obstructions such as
+          pedestrians, vehicles, animals, and even potholes!
+        </p>
+        <div class="carousel-container">
+          <img src="/static/images/image1.jpeg" alt="Image 1" />
+          <img src="/static/images/image2.jpg" alt="Image 2" />
+          <img src="/static/images/image3.jpg" alt="Image 3" />
+        </div>
+        <p>
+          Our app provides a seamless experience for users to demonstrate
+          instance segmentation in both videos and images. Whether you want to
+          analyze pre-recorded videos or examine specific images, our powerful
+          model can accurately identify and segment different objects and
+          obstructions in the scene.
+        </p>
+      </div>
+    </div>
+  </body>
 </html>
