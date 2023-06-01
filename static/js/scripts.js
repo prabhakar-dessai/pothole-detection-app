@@ -14,6 +14,14 @@ function scrollToAbout() {
 $(document).ready(function () {
 	$(".selectpicker").selectpicker();
 
+	//Function to clear the image and its corresponding results
+	function clearImageAndResults() {
+		var processedImageContainer = document.getElementById("processed-image-container");
+		var inputImage = document.getElementById("input-image");
+		processedImageContainer.innerHTML = "";
+		inputImage.src = "";
+	}
+
 	// Function to handle section visibility based on select box value
 	function handleSectionVisibility() {
 		var selectBox = document.querySelector(".selectpicker");
@@ -25,9 +33,11 @@ $(document).ready(function () {
 			if (selectedOption === "Images") {
 				imageSection.style.display = "block";
 				videoSection.style.display = "none";
+				clearImageAndResults();
 			} else if (selectedOption === "Videos") {
 				imageSection.style.display = "none";
 				videoSection.style.display = "block";
+				clearImageAndResults();
 			}
 		});
 	}

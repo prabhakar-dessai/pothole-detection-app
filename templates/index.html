@@ -82,7 +82,7 @@
           <p class="section-description">
             This takes in an image and outputs the image, providing the exact
             outline of objects within the image.
-          </p>
+          </p> 
           <form
             action="{{url_for('upload_file_img')}}"
             method="post"
@@ -121,40 +121,37 @@
             </div>
           </form>
          
-          <!-- Location to display the input and processed image or video -->
-          <div id="processed-image-container">
-            {% if input_filename %}
-            <div class="image-container">
-              <div class="image-wrapper">
-                {% if input_type == 'image' %}
-                <img id="input-image" class="input-image img-responsive" src="{{ url_for('static', filename='videos/input/' + input_filename) }}" />
-                <div class="caption">Input Image</div>
-                {% elif input_type == 'video' %}
-                <video id="input-video" class="input-video img-responsive" controls>
-                  <source src="{{ url_for('static', filename='videos/input/' + input_filename) }}" type="video/mp4" />
-                </video>
-                <div class="caption">Input Video</div>
-                {% endif %}
-              </div>
+        <!-- Location to display the input and processed image or video -->
+        <div id="processed-image-container">
+          {% if input_filename and processed_filename %}
+          <h3>Results</h3>
+          <div class="image-container">
+            <div class="image-wrapper">
+              {% if input_type == 'image' %}
+              <img id="input-image" class="input-image img-responsive" src="{{ url_for('static', filename='videos/input/' + input_filename) }}" />
+              <div class="caption">Input Image</div>
+              {% elif input_type == 'video' %}
+              <video id="input-video" class="input-video img-responsive" controls>
+                <source src="{{ url_for('static', filename='videos/input/' + input_filename) }}" type="video/mp4" />
+              </video>
+              <div class="caption">Input Video</div>
+              {% endif %}
             </div>
-            {% endif %}
-            
-            {% if processed_filename %}
-            <div class="image-container">
-              <div class="image-wrapper">
-                {% if processed_type == 'image' %}
-                <img id="processed-image" class="processed-image img-responsive" src="{{ url_for('static', filename=processed_filename) }}" />
-                <div class="caption">Processed Image</div>
-                {% elif processed_type == 'video' %}
-                <video id="processed-video" class="processed-video img-responsive" controls>
-                  <source src="{{ url_for('static', filename=processed_filename) }}" type="video/mp4" />
-                </video>
-                <div class="caption">Processed Video</div>
-                {% endif %}
-              </div>
-            </div>
-            {% endif %}
           </div>
+          <div class="image-container">
+            <div class="image-wrapper">
+              {% if processed_type == 'image' %}
+              <img id="processed-image" class="processed-image img-responsive" src="{{ url_for('static', filename=processed_filename) }}" />
+              <div class="caption">Processed Image</div>
+              {% elif processed_type == 'video' %}
+              <video id="processed-video" class="processed-video img-responsive" controls>
+                <source src="{{ url_for('static', filename=processed_filename) }}" type="video/mp4" />
+              </video>
+              <div class="caption">Processed Video</div>
+              {% endif %}
+            </div>
+          </div>
+          {% endif %}
         </div>
 
         <!--Video Instance Segmentation-->
