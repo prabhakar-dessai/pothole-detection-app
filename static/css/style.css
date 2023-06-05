@@ -1,11 +1,17 @@
 /* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap');
-
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap");
 
 /* Common styles */
 body {
 	margin: 0;
 	padding: 0;
+}
+
+.results-header {
+	flex-basis: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 .header {
@@ -30,14 +36,14 @@ body {
 }
 
 .content {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 700;
 	font-size: 2vw;
 	line-height: 1.2;
 	margin: 5% 12%;
 	text-align: left;
-	color: #FFFFFF;
+	color: #ffffff;
 }
 
 .logo {
@@ -65,7 +71,7 @@ body {
 	margin-right: 21px;
 	width: 200px;
 	height: 60px;
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 400;
 	font-size: 1.2vw;
@@ -80,7 +86,7 @@ body {
 
 /* DEMO Section */
 .demo {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	color: #000000;
 	display: flex;
@@ -123,7 +129,10 @@ body {
 	/* Align the dropdown to the center */
 }
 
-.select-container .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+.select-container
+	.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(
+		.input-group-btn
+	) {
 	width: 500px !important;
 }
 
@@ -139,7 +148,7 @@ body {
 }
 
 .section-title {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 600;
 	font-size: 2vw;
@@ -153,7 +162,7 @@ body {
 }
 
 .section-description {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 400;
 	font-size: 1.2vw;
@@ -195,7 +204,10 @@ body {
 	justify-content: center;
 }
 
-.select-container .bootstrap-select:not([class*=col-]):not([class*=form-control]):not(.input-group-btn) {
+.select-container
+	.bootstrap-select:not([class*="col-"]):not([class*="form-control"]):not(
+		.input-group-btn
+	) {
 	width: 500px !important;
 }
 
@@ -209,7 +221,7 @@ body {
 }
 
 .section-title {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 600;
 	font-size: 2vw;
@@ -220,7 +232,7 @@ body {
 }
 
 .section-description {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 400;
 	font-size: 1.2vw;
@@ -392,6 +404,7 @@ body {
 #processed-image-container {
 	margin-top: 10px;
 	display: flex;
+	flex-wrap: wrap;
 }
 
 .image-container {
@@ -399,7 +412,7 @@ body {
 	justify-content: center;
 	align-items: center;
 	flex-direction: column;
-	margin: 10px;
+	flex: 1;
 }
 
 .image-wrapper {
@@ -424,7 +437,7 @@ body {
 
 /* /Adding About us Section code/  */
 .about-us {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	background-color: #070606;
 	display: flex;
@@ -440,19 +453,18 @@ body {
 }
 
 .highlight {
-	color: #D2973B;
+	color: #d2973b;
 }
 
 .about-us-text {
-	font-family: 'Inter';
+	font-family: "Inter";
 	font-style: normal;
 	font-weight: 400;
 	font-size: 18px;
 	line-height: 24px;
 	text-align: center;
 	padding: 4% 20%;
-	color: #FFFFFF;
-
+	color: #ffffff;
 }
 
 .carousel-container {
@@ -466,7 +478,6 @@ body {
 	max-width: 40%;
 	max-height: 20%;
 }
-
 
 /* Responsiveness */
 @media (max-width: 300px) {

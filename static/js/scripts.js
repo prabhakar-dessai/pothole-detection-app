@@ -1,13 +1,13 @@
 //Scrolling to DEMO Section
 function scrollToDemo() {
-	const targetDiv = document.getElementById('demoDiv');
-	targetDiv.scrollIntoView({ behavior: 'smooth' });
+	const targetDiv = document.getElementById("demoDiv");
+	targetDiv.scrollIntoView({ behavior: "smooth" });
 }
 
 //Scrolling to About us Section
 function scrollToAbout() {
-	const targetDiv = document.getElementById('aboutUs');
-	targetDiv.scrollIntoView({ behavior: 'smooth' });
+	const targetDiv = document.getElementById("aboutUs");
+	targetDiv.scrollIntoView({ behavior: "smooth" });
 }
 
 //Handles the Selection of Image or a Video
@@ -16,7 +16,9 @@ $(document).ready(function () {
 
 	//Function to clear the image and its corresponding results
 	function clearImageAndResults() {
-		var processedImageContainer = document.getElementById("processed-image-container");
+		var processedImageContainer = document.getElementById(
+			"processed-image-container"
+		);
 		var inputImage = document.getElementById("input-image");
 		processedImageContainer.innerHTML = "";
 		inputImage.src = "";
@@ -51,7 +53,6 @@ $(document).ready(function () {
 	handleSectionVisibility();
 });
 
-
 // Function to handle the choose an image and preview option
 document.addEventListener("DOMContentLoaded", function () {
 	const imageFileInput = document.getElementById("img");
@@ -66,6 +67,8 @@ document.addEventListener("DOMContentLoaded", function () {
 	const videoPreview = document.getElementById("video-preview-video");
 	const imageUploadText = document.getElementById("image-upload-text");
 	const videoUploadText = document.getElementById("video-upload-text");
+	const uploadButton = document.querySelectorAll(".upload-button");
+	const progressBar = document.querySelectorAll(".progress");
 
 	function handleImageSelection() {
 		const file = imageFileInput.files[0];
@@ -124,12 +127,24 @@ document.addEventListener("DOMContentLoaded", function () {
 		videoUploadText.style.display = "block";
 	}
 
+	function handleProgress() {
+		progressBar.forEach((bar) => {
+			bar.style.display = "block";
+		});
+	}
+
 	imageFileInput.addEventListener("change", handleImageSelection);
 	videoFileInput.addEventListener("change", handleVideoSelection);
 	imageCloseFile.addEventListener("click", clearImageSelection);
 	videoCloseFile.addEventListener("click", clearVideoSelection);
+	uploadButton.forEach((btn) => {
+		btn.addEventListener("click", handleProgress);
+	});
 
 	// Hide the initial image and video previews
+	progressBar.forEach((bar) => {
+		bar.style.display = "none";
+	});
 	imageFileInfo.style.display = "none";
 	videoFileInfo.style.display = "none";
 	imagePreviewImage.style.display = "none";

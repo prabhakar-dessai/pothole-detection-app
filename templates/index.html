@@ -115,6 +115,11 @@
                 </div>
               </label>
             </div>
+            <div class="progress">
+              <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" 
+              aria-valuemin="0" aria-valuemax="100" style="width:100%"> Processing Image
+              </div>
+              </div>
             <div class="upload-button">
               <input type="submit" value="Upload image" />
             </div>
@@ -124,7 +129,7 @@
         <!-- Location to display the input and processed image or video -->
         <div id="processed-image-container">
           {% if input_filename and processed_filename %}
-          <h3>Results</h3>
+          <h3 class="results-header">Results</h3>
           <div class="image-container">
             <div class="image-wrapper">
               {% if input_type == 'image' %}
@@ -197,6 +202,11 @@
                 </div>
               </label>
             </div>
+            <div class="progress">
+              <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar" 
+              aria-valuemin="0" aria-valuemax="100" style="width:100%"> Processing Video
+              </div>
+              </div>
             <div class="upload-button">
               <input type="submit" value="Upload Video" />
             </div>
