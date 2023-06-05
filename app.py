@@ -5,7 +5,7 @@ from main import process_file, process_file_img
 
 app = Flask(__name__)
 
-app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'png', 'jpg'}
+app.config['ALLOWED_EXTENSIONS'] = {'mp4', 'png', 'jpg' , 'jpeg'}
 app.config['UPLOAD_FOLDER'] = 'static/videos/input'
 
 def allowed_file(filename):
