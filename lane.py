@@ -376,7 +376,7 @@ def plot_lines(image,lines):
                         y1 = int(y1 * scale_height)
                         x2 = int(x2 * scale_width)
                         y2 = int(y2 * scale_height)
-                        cv2.line(image, (x1,y1), (x2, y2), (255,0,0), 2)
+                        cv2.line(image, (x1,y1), (x2, y2), (255,0,0), 6)
         return image
     except Exception as e:
         print(e)

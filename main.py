@@ -26,7 +26,8 @@ def process_file_img(filename):
         data_sample=result,
         draw_gt = None,
         wait_time=0,
-        out_file=rf"static/videos/output/output_{filename}"
+        out_file=rf"static/videos/output/output_{filename}",
+        pred_score_thr=0.4
     )
     return out_file
 
@@ -64,7 +65,7 @@ def process_file(filename):
             data_sample=result,
             draw_gt=False,
             show=False,
-            pred_score_thr=40
+            pred_score_thr=0.4
             )
         frame = visualizer.get_image()
 
