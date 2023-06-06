@@ -20,11 +20,11 @@ visualizer = dict(
     name='visualizer')
 log_processor = dict(type='LogProcessor', window_size=50, by_epoch=True)
 log_level = 'INFO'
-load_from = 'epoch_30.pth'
+load_from = 'checkpoints/epoch_30.pth'
 resume = False
 train_cfg = dict(
     type='EpochBasedTrainLoop',
-    max_epochs=30,
+    max_epochs=60,
     val_interval=3,
     dynamic_intervals=[(280, 1)])
 val_cfg = dict(type='ValLoop')
@@ -99,7 +99,7 @@ train_dataloader = dict(
     dataset=dict(
         type='CocoDataset',
         data_root='./datasets/',
-        ann_file='annotations/edit_instances_train2014.json',
+        ann_file='annotations/instances_train2014.json',
         data_prefix=dict(img='train2014/'),
         filter_cfg=dict(filter_empty_gt=True, min_size=32),
         pipeline=[
@@ -135,7 +135,9 @@ train_dataloader = dict(
             dict(type='PackDetInputs')
         ],
         backend_args=None,
-        metainfo=dict(classes='pothole')),
+        metainfo=dict(
+            classes=('person', 'car', 'motorcycle', 'bus', 'truck', 'cat',
+                     'dog', 'cow', 'pothole'))),
     pin_memory=True)
 val_dataloader = dict(
     batch_size=3,
@@ -146,7 +148,7 @@ val_dataloader = dict(
     dataset=dict(
         type='CocoDataset',
         data_root='./datasets/',
-        ann_file='annotations/edit_instances_val2014.json',
+        ann_file='annotations/instances_val2014.json',
         data_prefix=dict(img='val2014/'),
         test_mode=True,
         pipeline=[
@@ -161,7 +163,9 @@ val_dataloader = dict(
                            'scale_factor'))
         ],
         backend_args=None,
-        metainfo=dict(classes='pothole')))
+        metainfo=dict(
+            classes=('person', 'car', 'motorcycle', 'bus', 'truck', 'cat',
+                     'dog', 'cow', 'pothole'))))
 test_dataloader = dict(
     batch_size=3,
     num_workers=10,
@@ -171,11 +175,11 @@ test_dataloader = dict(
     dataset=dict(
         type='CocoDataset',
         data_root='./datasets/',
-        ann_file='annotations/edit_instances_val2014.json',
+        ann_file='annotations/instances_val2014.json',
         data_prefix=dict(img='val2014/'),
         test_mode=True,
         pipeline=[
-            dict(type='mmdet.LoadImageFromNDArray', backend_args=None),
+            dict(type='LoadImageFromFile', backend_args=None),
             dict(type='Resize', scale=(640, 640), keep_ratio=True),
             dict(
                 type='Pad', size=(640, 640),
@@ -186,17 +190,19 @@ test_dataloader = dict(
                            'scale_factor'))
         ],
         backend_args=None,
-        metainfo=dict(classes='pothole')))
+        metainfo=dict(
+            classes=('person', 'car', 'motorcycle', 'bus', 'truck', 'cat',
+                     'dog', 'cow', 'pothole'))))
 val_evaluator = dict(
     type='CocoMetric',
-    ann_file='./datasets//annotations/edit_instances_val2014.json',
+    ann_file='./datasets//annotations/instances_val2014.json',
     metric=['bbox', 'segm'],
     format_only=False,
     backend_args=None,
     proposal_nums=(100, 1, 10))
 test_evaluator = dict(
     type='CocoMetric',
-    ann_file='./datasets//annotations/edit_instances_val2014.json',
+    ann_file='./datasets//annotations/instances_val2014.json',
     metric=['bbox', 'segm'],
     format_only=False,
     backend_args=None,
@@ -271,7 +277,7 @@ model = dict(
         act_cfg=dict(type='SiLU', inplace=True)),
     bbox_head=dict(
         type='RTMDetInsSepBNHead',
-        num_classes=1,
+        num_classes=9,
         in_channels=256,
         stacked_convs=2,
         share_conv=True,
@@ -289,19 +295,7 @@ model = dict(
             loss_weight=1.0),
         loss_bbox=dict(type='GIoULoss', loss_weight=2.0),
         loss_mask=dict(
-            type='DiceLoss', loss_weight=2.0, eps=5e-06, reduction='mean'),
-        train_cfg=dict(
-            assigner=dict(type='DynamicSoftLabelAssigner', topk=13),
-            allowed_border=-1,
-            pos_weight=-1,
-            debug=False),
-        test_cfg=dict(
-            nms_pre=1000,
-            min_bbox_size=0,
-            score_thr=0.05,
-            nms=dict(type='nms', iou_threshold=0.6),
-            max_per_img=100,
-            mask_thr_binary=0.5)),
+            type='DiceLoss', loss_weight=2.0, eps=5e-06, reduction='mean')),
     train_cfg=dict(
         assigner=dict(type='DynamicSoftLabelAssigner', topk=13),
         allowed_border=-1,
@@ -337,7 +331,7 @@ train_pipeline_stage2 = [
     dict(type='Pad', size=(640, 640), pad_val=dict(img=(114, 114, 114))),
     dict(type='PackDetInputs')
 ]
-max_epochs = 300
+max_epochs = 60
 stage2_num_epochs = 20
 base_lr = 0.004
 interval = 10
@@ -377,7 +371,7 @@ custom_hooks = [
             dict(type='PackDetInputs')
         ])
 ]
-metainfo = dict(classes='pothole')
-work_dir = '/content/gdrive/MyDrive/mask_rcnn_coco_plus_kaggle_logs/'
-
-
+metainfo = dict(
+    classes=('person', 'car', 'motorcycle', 'bus', 'truck', 'cat', 'dog',
+             'cow', 'pothole'))
+work_dir = 'logs/'
