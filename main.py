@@ -8,7 +8,7 @@ from lane import *
 from mmdet.registry import VISUALIZERS
 
 config_file = 'config.py'
-checkpoint_file = 'models/epoch_30.pth'
+checkpoint_file = 'models/epoch_60.pth'
 model = init_detector(config_file, checkpoint_file, device='cuda:0')
 
 def process_file_img(filename):
