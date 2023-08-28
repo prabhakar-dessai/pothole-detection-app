@@ -180,11 +180,9 @@ def get_mapped_lines(h_lines):
   
   
 
-def pomenn_lines(combined_lines, ylim, check):
-    pom = []
-    enn = []
-    brr1 = []
-    brr2 = []
+def seperate_lines(combined_lines, ylim, check):
+    r = []
+    l = []
     for line in combined_lines:
         try:
             if line[3] > 1:
@@ -201,101 +199,95 @@ def pomenn_lines(combined_lines, ylim, check):
                 if check:
                     if slope > 0 and slope < 60:
                         if x3 > 320:
-                            pom.append([x3,y3,x2,y2])
-                        else:
-                            brr1.append([x3,y3,x2,y2])
+                            r.append([x3,y3,x2,y2])
                         
                     elif slope < 0 and slope > -70:
                         
                         if x3 < 160:
-                            enn.append([x1,y1,x3,y3])
-                        else:
-                            brr2.append([x1,y1,x3,y3])
+                            l.append([x1,y1,x3,y3])
                 else:
                     if slope > 0:
-                        pom.append([x3,y3,x2,y2])
+                        r.append([x3,y3,x2,y2])
                     elif slope < 0:
-                        enn.append([x1,y1,x3,y3])
+                        l.append([x1,y1,x3,y3])
         except Exception as e:
             exc_type, exc_obj, exc_tb = sys.exc_info()
             print(exc_type, exc_tb.tb_lineno)
-    return (pom,enn,brr1,brr2)
+    return (r,l)
 
 
 def apply_thresh(image,bright=False):
-    pomenn_values = []
+    rl_lines = []
     global type_
     type_ = 'Adaptive'
     th = cv2.adaptiveThreshold(image, 255, cv2.ADAPTIVE_THRESH_MEAN_C, cv2.THRESH_BINARY, 21, 5)
     canny = cv2.Canny(th,50,100)
-    lines = get_hough(canny,100)
-    pomenn_values.append(lines)
-    pom,enn,brr1,brr2 = pomenn_values[0]
-    pom2,enn2 = pom,enn
-    type_ = "Adaptive"
-    return [pom2,enn2]
+    lines = get_hough(canny)
+    rl_lines.append(lines)
+    r, l = rl_lines[0]
+    return [r, l]
 
 
-def get_hough(canny,thresh):
+def get_hough(canny):
 
     h_lines = cv2.HoughLines(canny, rho=1, theta=np.pi/180, threshold=95)
     combined_lines = get_mapped_lines(h_lines)
-    return pomenn_lines(combined_lines,350,True)
+    return seperate_lines(combined_lines,350,True)
 
 
 def valid(frame_no, lines):
     global past_lines
-    pom,enn = lines
+    r,l = lines
     if len(past_lines['r']) == 20:
-        if len(pom) > 0:
+        if len(r) > 0:
             past_lines['r'].pop(0)
-            past_lines['r'].append(pom[0])
+            past_lines['r'].append(r[0])
         else:
             past_lines['r'].pop(0)
-            past_lines['r'].append(pom)
+            past_lines['r'].append(r)
     if len(past_lines['l']) == 20:
-        if len(enn) > 0:
+        if len(l) > 0:
             past_lines['l'].pop(0)
-            past_lines['l'].append(enn[0])
+            past_lines['l'].append(l[0])
         else:
             past_lines['l'].pop(0)
-            past_lines['l'].append(enn)
+            past_lines['l'].append(l)
         
             
     else:
-        if len(pom) > 0:
-            past_lines['r'].append(pom[0])
+        if len(r) > 0:
+            past_lines['r'].append(r[0])
         else:
-            past_lines['r'].append(pom)
+            past_lines['r'].append(r)
             
-        if len(enn) > 0:
-            past_lines['l'].append(enn[0])
+        if len(l) > 0:
+            past_lines['l'].append(l[0])
         else:
-            past_lines['l'].append(enn)
+            past_lines['l'].append(l)
     
     update_thresh_slope()
     
     
-    pom2,enn2 = [],[]
-    if len(pom) >= 1:
-        pom = find_leftmost_line(merge_lines(pom,5))
-        for line in pom:
+    r2,l2 = [],[]
+    if len(r) >= 1:
+        r = find_leftmost_line(merge_lines(r,5))
+        for line in r:
             gradient = slope(line)
             if abs(gradient-thresh_slope['r']) <  5:
-                pom2.append(line)
+                r2.append(line)
     else:
-        pom2.append([])
+        r2.append([])
         
-    if len(enn) > 0:
-        enn = find_rightmost_line(merge_lines(enn,5))
-        for line in enn:
+    if len(l) > 0:
+        l = find_rightmost_line(merge_lines(l,5))
+        for line in l:
             gradient = slope(line)
             if abs(gradient-thresh_slope['l']) < 5:
-                enn2.append(line)
+                l2.append(line)
     else:
-        enn2.append([])
+        l2.append([])
     
-    return [pom2,enn2]
+    return [r2,l2]
         
 
 
